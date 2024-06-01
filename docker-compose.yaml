@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+
+  app:
+    build: .
+    restart: always
+    networks:
+      - my-network
+    ports:
+      - ${APP_PORTS}
+    depends_on:
+      - database
+    environment:
+      DB_HOST: database
+      DB_PORT: ${DATABASE_PORT}
+      DB_NAME: ${DATABASE_NAME}
+      DB_USER: ${DATABASE_USER}
+      DB_PASSWORD: ${DATABASE_PASSWORD}
+
+  database:
+    image: mysql:8.0.33
+    networks:
+      - my-network
+    ports:
+      - ${DATABASE_PORTS}
+    hostname: database
+    environment:
+      - MYSQL_DATABASE=analysis
+      - MYSQL_ROOT_PASSWORD=${DATABASE_ROOT_PASSWORD}
+      - MYSQL_USER=${DATABASE_USER}
+      - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+
+networks:
+  my-network:
