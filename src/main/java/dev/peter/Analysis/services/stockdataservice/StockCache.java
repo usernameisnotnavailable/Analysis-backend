@@ -33,6 +33,7 @@ public class StockCache {
 
     public void updateCachedStock(String companyName, List<Stock> stocks){
         if (companyName != null && stocks != null) {
+            logger.info("Cache updated for: " + companyName);
         synchronized (this.lock){
             stockCache.put(companyName, cacheBuilder(companyName, stocks));
             lastModificationDate.put(companyName, LocalDate.now());
