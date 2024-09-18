@@ -29,7 +29,6 @@ class DataReadingControllerTest {
     @MockBean
     private StockInputFactory stockInputFactory;
 
-
     @Test
     void testReadDataNoWithoutPath() throws Exception {
         String requestBody = "[]";

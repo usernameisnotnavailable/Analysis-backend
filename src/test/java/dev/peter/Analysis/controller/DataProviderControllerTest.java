@@ -15,12 +15,12 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+
 
 @WebMvcTest(DataProviderController.class)
 class DataProviderControllerTest {
@@ -30,6 +30,7 @@ class DataProviderControllerTest {
 
     @Autowired
     MockMvc mockMvc;
+
 
     @Test
     public void testStocksEndpoint() throws Exception {
@@ -41,10 +42,10 @@ class DataProviderControllerTest {
 
     @Test
     public void testStocksEndpointWithParamsEmptyReturn() throws Exception {
-        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/stocks?stock=OTP&from=2020-01-01&to=2021-01-01"))
-                .andReturn();
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(new ArrayList<>());
+        MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/stocks?stock=OTP&from=2020-01-01&to=2021-01-01"))
+                .andReturn();
 
         assertEquals(204, result.getResponse().getStatus());
     }
@@ -67,9 +68,10 @@ class DataProviderControllerTest {
                         .get("/stocks")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("stock", "OTP")
-                .param("from", "2020-01-01")
-                .param("to", "2021-01-01"))
+                .param("from", "2024-05-01")
+                .param("to", "2024-05-06"))
                 .andReturn();
+
 
         assertEquals(200, result.getResponse().getStatus());
     }
@@ -86,5 +88,6 @@ class DataProviderControllerTest {
 
         assertEquals(400, result.getResponse().getStatus());
     }
+
 
 }

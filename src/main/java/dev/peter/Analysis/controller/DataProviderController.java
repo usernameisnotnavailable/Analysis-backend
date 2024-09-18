@@ -1,5 +1,6 @@
 package dev.peter.Analysis.controller;
 
+import dev.peter.Analysis.controller.DTO.Response;
 import dev.peter.Analysis.model.Stock;
 import dev.peter.Analysis.services.stockdataservice.DataService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,20 +32,14 @@ public class DataProviderController {
             @RequestParam(name = "to")
             @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate to){
 
-        if (from.isAfter(to))
-
-            return ResponseEntity.badRequest().body("The request until date cannot be before the from date");
-
+        if (from.isAfter(to)) return ResponseEntity.badRequest().body("The request until date cannot be before the from date");
 
         List<Stock> stocks = dataService.getStocksByNameForTimePeriod(stockName, from, to);
 
         logger.info(String.format("Requested stock info: Stock name: %s from: %s, to: %s", stockName, from, to));
 
         if (stocks == null || stocks.isEmpty()){
-            return ResponseEntity.ok().body(
-                    Response.builder()
-                            .status("Empty data")
-                            .message(String.format("No data found with company name: %s, from: %s, to: %s" , stockName, from, to)));
+            return new ResponseEntity<>(HttpStatusCode.valueOf(204));
         } else {
             return ResponseEntity.ok(stocks);
         }
