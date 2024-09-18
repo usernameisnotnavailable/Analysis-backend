@@ -15,9 +15,7 @@ import java.util.logging.Logger;
 
 @RestController
 public class DataProviderController {
-
     Logger logger = Logger.getLogger(DataProviderController.class.getName());
-
     private final DataService dataService;
 
     public DataProviderController(DataService dataService) {
@@ -34,14 +32,19 @@ public class DataProviderController {
             @DateTimeFormat(pattern = "yyyy-MM-dd")LocalDate to){
 
         if (from.isAfter(to))
+
             return ResponseEntity.badRequest().body("The request until date cannot be before the from date");
+
 
         List<Stock> stocks = dataService.getStocksByNameForTimePeriod(stockName, from, to);
 
-        logger.info(String.format("Requested stock info: Stock name: %s from: %s to: %s", stockName, from, to));
+        logger.info(String.format("Requested stock info: Stock name: %s from: %s, to: %s", stockName, from, to));
 
         if (stocks == null || stocks.isEmpty()){
-            return new ResponseEntity<>(HttpStatusCode.valueOf(204));
+            return ResponseEntity.ok().body(
+                    Response.builder()
+                            .status("Empty data")
+                            .message(String.format("No data found with company name: %s, from: %s, to: %s" , stockName, from, to)));
         } else {
             return ResponseEntity.ok(stocks);
         }

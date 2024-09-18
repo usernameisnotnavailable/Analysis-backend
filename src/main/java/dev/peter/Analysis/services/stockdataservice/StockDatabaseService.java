@@ -20,6 +20,7 @@ public class StockDatabaseService {
     }
 
     protected List<Stock> getStocksFromDataBase(String companyName, LocalDate from, LocalDate to){
+        logger.info(String.format("Stocks requested from database for %s, from: %s, to: %s", companyName, from, to));
         List<Stock> retrievedFromDatabase = stockRepository.getStocksByCompanyNameAndTradeDateBetween(companyName, from, to);
         retrievedFromDatabase.sort(Comparator.comparing(Stock::getTradeDate));
         return retrievedFromDatabase;

@@ -5,10 +5,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 @Service
 public class StockCacheService {
+    private final Logger logger = Logger.getLogger(StockCacheService.class.getName());
     private final StockCache stockCache;
     private final StockDatabaseService stockDatabaseService;
 
@@ -18,6 +20,7 @@ public class StockCacheService {
     }
 
     List<Stock> getStocks(String companyName, LocalDate requestFromDate, LocalDate requestUntilDate) {
+        logger.info(String.format("Stocks for %s, requested from: %s, to: %s", companyName, requestFromDate, requestUntilDate));
         List<Stock> requestedStocks;
 
         if (stockCache.isStockCached(companyName)) {
