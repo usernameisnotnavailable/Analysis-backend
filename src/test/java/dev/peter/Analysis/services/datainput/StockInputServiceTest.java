@@ -19,16 +19,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class StockInputFactoryTest {
+class StockInputServiceTest {
 
     @Mock
-    TxtReader txtReader;
-    @Mock
-    CsvReader csvReader;
+    DataReader dataReader;
+
     @Mock
     DataService dataService;
     @InjectMocks
-    StockInputFactory stockInputFactory;
+    StockInputService stockInputService;
 
     @Test
     public void testInputStocksWithTxt() throws NoContentFoundException, FileNotFoundException {
@@ -36,10 +35,12 @@ class StockInputFactoryTest {
 
         List<Stock> stocks = List.of(new Stock(), new Stock(), new Stock());
         Map<String, List<Stock>> mockStocks = Map.of("OTP", stocks);
+        dataReader = StockInputFactory.createReader(mockPath);
 
-        when(txtReader.parseStocks(mockPath)).thenReturn(mockStocks);
+        when(dataReader.readData()).thenReturn(mockStocks);
 
-        stockInputFactory.inputStocks(mockPath);
+        stockInputService.read(mockPath);
+
 
         verify(dataService).saveStocks(mockStocks);
     }
@@ -50,10 +51,10 @@ class StockInputFactoryTest {
 
         List<Stock> stocks = List.of(new Stock(), new Stock(), new Stock());
         Map<String, List<Stock>> mockStocks = Map.of("OTP", stocks);
+        dataReader = StockInputFactory.createReader(mockPath);
+        when(dataReader.readData()).thenReturn(mockStocks);
 
-        when(csvReader.parseStocks(mockPath)).thenReturn(mockStocks);
-
-        stockInputFactory.inputStocks(mockPath);
+        stockInputService.read(mockPath);
 
         verify(dataService).saveStocks(mockStocks);
     }
@@ -62,7 +63,7 @@ class StockInputFactoryTest {
     public void testInputStocksWithNotSupportedExtension() throws NoContentFoundException {
         String mockPath = "this/is/a/mock/path.xlsx";
 
-        Executable executable = () -> stockInputFactory.inputStocks(mockPath);
+        Executable executable = () -> stockInputService.read(mockPath);
 
         assertThrows(FileNotFoundException.class, executable);
     }

@@ -2,7 +2,7 @@ package dev.peter.Analysis.controller;
 
 import dev.peter.Analysis.controller.DTO.Response;
 import dev.peter.Analysis.exceptions.NoContentFoundException;
-import dev.peter.Analysis.services.datainput.StockInputFactory;
+import dev.peter.Analysis.services.datainput.StockInputService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,12 +14,12 @@ import java.util.logging.Logger;
 
 @Controller
 public class DataReadingController {
-    private final StockInputFactory stockInputFactory;
+    private final StockInputService stockInputService;
 
     private final Logger logger = Logger.getLogger(DataReadingController.class.getName());
 
-    public DataReadingController(StockInputFactory stockInputFactory) {
-        this.stockInputFactory = stockInputFactory;
+    public DataReadingController(StockInputService stockInputService) {
+        this.stockInputService = stockInputService;
     }
 
     @PostMapping("/read-data")
@@ -33,7 +33,7 @@ public class DataReadingController {
         } else {
             for (String path : paths) {
                 try {
-                    stockInputFactory.inputStocks(path);
+                    stockInputService.read(path);
                     customResponse += "File read from: " + path;
                 } catch (NoContentFoundException | FileNotFoundException e) {
                     customResponse += "Error on path: " + path + " Error message: " + e;

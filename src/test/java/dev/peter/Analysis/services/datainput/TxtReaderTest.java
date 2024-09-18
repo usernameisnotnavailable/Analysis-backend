@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
-import org.mockito.InjectMocks;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -25,8 +24,7 @@ import static org.mockito.ArgumentMatchers.any;
 @ExtendWith(MockitoExtension.class)
 public class TxtReaderTest {
 
-    @InjectMocks
-    private TxtReader txtReader;
+    TxtReader txtReader = new TxtReader("path/to/mock.txt");
 
     private MockedStatic<Files> mockedFiles;
 
@@ -42,7 +40,6 @@ public class TxtReaderTest {
 
     @Test
     void testParseStockWithValidData() throws NoContentFoundException, FileNotFoundException {
-        String stringPath = "path/to/mock.txt";
         List<String> mockData = Arrays.asList(
                 "this is an extra line with details",
                 "OTP    2024.05.02.      100     1000    1000    1000.123    10  80  70  110     HUF     75.15  155555",
@@ -52,7 +49,7 @@ public class TxtReaderTest {
 
         mockedFiles.when(() -> Files.readAllLines(any(Path.class))).thenReturn(mockData);
 
-        Map<String, List<Stock>> result = txtReader.parseStocks(stringPath);
+        Map<String, List<Stock>> result = txtReader.readData();
 
         assertNotNull(result);
         assertEquals(2,result.size());
@@ -64,8 +61,6 @@ public class TxtReaderTest {
 
     @Test
     void testParseStockWithInvalidData() throws NoContentFoundException, FileNotFoundException {
-        TxtReader txtReader = new TxtReader();
-        String stringPath = "path/to/mock.txt";
         List<String> mockData = Arrays.asList(
                 "this is an extra line with details",
                 "OTP    2024.05.01.      100     1000    apple    1000.123    10  80  70  110     HUF     75.15  155555",
@@ -75,7 +70,7 @@ public class TxtReaderTest {
 
         mockedFiles.when(() -> Files.readAllLines(any(Path.class))).thenReturn(mockData);
 
-        Map<String, List<Stock>> result = txtReader.parseStocks(stringPath);
+        Map<String, List<Stock>> result = txtReader.readData();
 
         assertNotNull(result);
         assertEquals(1, result.get("OTP").size());
@@ -84,8 +79,8 @@ public class TxtReaderTest {
 
     @Test
     void testParseStockWithMissingData() throws NoContentFoundException, FileNotFoundException {
-        TxtReader txtReader = new TxtReader();
         String stringPath = "path/to/mock.txt";
+        TxtReader txtReader = new TxtReader(stringPath);
         List<String> mockData = Arrays.asList(
                 "this is an extra line with details",
                 "OTP    2024.05.01.      100     1000        1000.123    10  80  70  110     HUF     75.15  155555",
@@ -95,7 +90,7 @@ public class TxtReaderTest {
 
         mockedFiles.when(() -> Files.readAllLines(any(Path.class))).thenReturn(mockData);
 
-        Map<String, List<Stock>> result = txtReader.parseStocks(stringPath);
+        Map<String, List<Stock>> result = txtReader.readData();
 
         assertNotNull(result);
         assertEquals(1, result.get("OTP").size());
@@ -104,13 +99,11 @@ public class TxtReaderTest {
 
     @Test
     void testParseStockWithNoData() throws NoContentFoundException, FileNotFoundException {
-        TxtReader txtReader = new TxtReader();
-        String stringPath = "path/to/mock.txt";
         List<String> mockData = List.of();
 
         mockedFiles.when(() -> Files.readAllLines(any(Path.class))).thenReturn(mockData);
 
-        Executable executable = () -> txtReader.parseStocks(stringPath);
+        Executable executable = txtReader::readData;
 
        assertThrows(NoContentFoundException.class, executable);
     }
