@@ -1,6 +1,5 @@
 package dev.peter.Analysis.controller;
 
-import dev.peter.Analysis.controller.DTO.Response;
 import dev.peter.Analysis.model.Stock;
 import dev.peter.Analysis.services.stockdataservice.DataService;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -39,7 +38,7 @@ public class DataProviderController {
         logger.info(String.format("Requested stock info: Stock name: %s from: %s, to: %s", stockName, from, to));
 
         if (stocks == null || stocks.isEmpty()){
-            return new ResponseEntity<>(HttpStatusCode.valueOf(204));
+            return ResponseEntity.status(200).build();
         } else {
             return ResponseEntity.ok(stocks);
         }

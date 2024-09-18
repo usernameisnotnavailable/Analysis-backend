@@ -54,12 +54,12 @@ class DataProviderControllerTest {
     @Test
     public void testStocksEndpointWithParamsStockReturn() throws Exception {
         List<Stock> mockStocks =  List.of(
-                new Stock("otp", LocalDate.of(2024,5,1), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
-                new Stock("otp", LocalDate.of(2024,5,2), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
-                new Stock("otp", LocalDate.of(2024,5,3), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
-                new Stock("otp", LocalDate.of(2024,5,4), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
-                new Stock("otp", LocalDate.of(2024,5,5), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
-                new Stock("otp", LocalDate.of(2024,5,6), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0)
+                new Stock("OTP", LocalDate.of(2024,5,1), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
+                new Stock("OTP", LocalDate.of(2024,5,2), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
+                new Stock("OTP", LocalDate.of(2024,5,3), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
+                new Stock("OTP", LocalDate.of(2024,5,4), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
+                new Stock("OTP", LocalDate.of(2024,5,5), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0),
+                new Stock("OTP", LocalDate.of(2024,5,6), 100.0,100,100.0,100.0,100,100.0,100.0,100.0,"HUF",100.0,100.0)
         );
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(mockStocks);
