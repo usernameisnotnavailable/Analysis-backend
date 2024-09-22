@@ -3,7 +3,6 @@ package dev.peter.Analysis.controller;
 import dev.peter.Analysis.model.Stock;
 import dev.peter.Analysis.services.stockdataservice.DataService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
