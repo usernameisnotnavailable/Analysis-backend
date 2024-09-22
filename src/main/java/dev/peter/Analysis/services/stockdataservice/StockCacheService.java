@@ -43,7 +43,8 @@ public class StockCacheService {
             }
 
             if (requestUntilDate.isAfter(lastFromCached.getTradeDate())) {
-                endAppendable = getFromDatabase(companyName, lastFromCached.getTradeDate().plusDays(1L), requestUntilDate);
+                LocalDate requestFromDateForPulling = lastFromCached.getTradeDate().plusDays(1L).isBefore(requestFromDate) ? requestFromDate : lastFromCached.getTradeDate().plusDays(1L);
+                endAppendable = getFromDatabase(companyName, requestFromDateForPulling, requestUntilDate);
                 isDataPulled = true;
                 endIndex = fromCache.size() - 1;
             } else {

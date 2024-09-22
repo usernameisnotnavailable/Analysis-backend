@@ -17,7 +17,9 @@ public class CsvReader extends FileReader implements DataReader {
 
     private final Logger logger = Logger.getLogger(CsvReader.class.getName());
 
+    public CsvReader(){
 
+    }
     public CsvReader(String path){
         super(path);
     }

@@ -19,6 +19,10 @@ public class TxtReader extends FileReader implements DataReader {
 
     private final Logger logger = Logger.getLogger(TxtReader.class.getName());
 
+    public TxtReader(){
+
+    }
+
 
     public TxtReader(String path) {
         super(path);

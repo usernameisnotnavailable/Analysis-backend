@@ -9,6 +9,10 @@ import java.time.format.DateTimeFormatter;
 public abstract class FileReader {
     String path;
 
+    public FileReader(){
+
+    }
+
     public FileReader(String path){
         this.path = path;
     }
