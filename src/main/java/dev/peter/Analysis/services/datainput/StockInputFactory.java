@@ -2,17 +2,20 @@ package dev.peter.Analysis.services.datainput;
 
 import dev.peter.Analysis.exceptions.NoContentFoundException;
 import dev.peter.Analysis.model.Stock;
+import org.springframework.stereotype.Component;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.*;
 
+@Component
 public class StockInputFactory {
+
 
     private static final Logger logger = Logger.getLogger(StockInputFactory.class.getName());
 
-    public static DataReader createReader(String path) throws UnsupportedOperationException{
+    public DataReader createReader(String path) throws UnsupportedOperationException{
         if (path.endsWith(".txt")){
             return new TxtReader(path);
         } else if (path.endsWith(".csv")) {

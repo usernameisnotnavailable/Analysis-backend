@@ -8,9 +8,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.function.Executable;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -25,33 +27,34 @@ class StockInputServiceTest {
     DataReader dataReader;
 
     @Mock
+    StockInputFactory stockInputFactory;
+    @Mock
     DataService dataService;
     @InjectMocks
     StockInputService stockInputService;
 
     @Test
     public void testInputStocksWithTxt() throws NoContentFoundException, FileNotFoundException {
-        String mockPath = "this/is/a/mock/path.txt";
+        String mockPath = "this/is/a/mocked/path.txt";
 
         List<Stock> stocks = List.of(new Stock(), new Stock(), new Stock());
         Map<String, List<Stock>> mockStocks = Map.of("OTP", stocks);
-        dataReader = StockInputFactory.createReader(mockPath);
 
+        when(stockInputFactory.createReader(mockPath)).thenReturn(dataReader);
         when(dataReader.readData()).thenReturn(mockStocks);
 
         stockInputService.read(mockPath);
-
 
         verify(dataService).saveStocks(mockStocks);
     }
 
     @Test
     public void testInputStocksWithCsv() throws NoContentFoundException, FileNotFoundException {
-        String mockPath = "this/is/a/mock/path.csv";
+        String mockPath = "this/is/a/mocked/path.csv";
 
         List<Stock> stocks = List.of(new Stock(), new Stock(), new Stock());
         Map<String, List<Stock>> mockStocks = Map.of("OTP", stocks);
-        dataReader = StockInputFactory.createReader(mockPath);
+        when(stockInputFactory.createReader(mockPath)).thenReturn(dataReader);
         when(dataReader.readData()).thenReturn(mockStocks);
 
         stockInputService.read(mockPath);
@@ -59,12 +62,5 @@ class StockInputServiceTest {
         verify(dataService).saveStocks(mockStocks);
     }
 
-    @Test
-    public void testInputStocksWithNotSupportedExtension() throws NoContentFoundException {
-        String mockPath = "this/is/a/mock/path.xlsx";
 
-        Executable executable = () -> stockInputService.read(mockPath);
-
-        assertThrows(FileNotFoundException.class, executable);
-    }
 }

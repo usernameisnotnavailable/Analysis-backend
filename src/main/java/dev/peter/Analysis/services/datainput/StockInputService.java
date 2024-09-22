@@ -14,21 +14,23 @@ import java.util.logging.Logger;
 public class StockInputService {
 
     private final DataService dataService;
+    private final StockInputFactory stockInputFactory;
 
     private final Logger logger = Logger.getLogger(StockInputService.class.getName());
 
 
-    public StockInputService(DataService dataService) {
+    public StockInputService(DataService dataService, StockInputFactory stockInputFactory) {
         this.dataService = dataService;
+        this.stockInputFactory = stockInputFactory;
     }
 
     public void read(String path) throws FileNotFoundException, NoContentFoundException {
-        DataReader dataReader = StockInputFactory.createReader(path);
+        DataReader dataReader = stockInputFactory.createReader(path);
         Map<String, List<Stock>> stocks = dataReader.readData();
 
         try {
             dataService.saveStocks(stocks);
-        } catch(NoContentFoundException e) {
+        } catch (NoContentFoundException e) {
             logger.warning("Couldn't read stock details from: " + path);
             throw new NoContentFoundException("Couldn't read stock details.");
         }
