@@ -57,7 +57,7 @@ public class DataProviderControllerIntegrationTest {
                 .param("to", "2024-05-08"))
                 .andExpect(status().isOk())
                 .andReturn();
-
+        System.out.println(result.getResponse().getContentAsString());
         assertTrue(result.getResponse().getContentAsString().isEmpty());
     }
 

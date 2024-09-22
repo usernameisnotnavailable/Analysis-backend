@@ -1,23 +1,21 @@
 package dev.peter.Analysis.controller;
 
-import dev.peter.Analysis.services.datainput.StockInputFactory;
+import dev.peter.Analysis.services.datainput.StockInputService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.util.AssertionErrors.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import java.io.FileNotFoundException;
+
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @WebMvcTest(DataReadingController.class)
@@ -27,56 +25,51 @@ class DataReadingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private StockInputFactory stockInputFactory;
+    private StockInputService stockInputService;
 
     @Test
     void testReadDataNoWithoutPath() throws Exception {
         String requestBody = "[]";
-
-        MvcResult result = mockMvc.perform(post("/read-data")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+        String customResponse = "No path provided in the request for /read-data";
+        mockMvc.perform(post("/read-data")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isBadRequest())
-                .andReturn();
+                .andExpect(jsonPath("$.message", is(customResponse)));
 
-        String expectedResponse = "{\"status\":\"error\",\"message\":\"No path provided in the request for /read-data\"}";
-        JSONAssert.assertEquals(expectedResponse, result.getResponse().getContentAsString(), false);
-        assertEquals("Should return error no path provided.", 400, result.getResponse().getStatus());
-        verify(stockInputFactory, never()).inputStocks(anyString());
+        verify(stockInputService, never()).read(anyString());
     }
 
     @Test
     void testReadDataWithValidPath() throws Exception {
         String requestBody = "[\"/mock/test/path.txt\"]";
 
-        MvcResult result = mockMvc.perform(post("/read-data")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+        String customResponse = "File read from: /mock/test/path.txt";
+
+        mockMvc.perform(post("/read-data")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isOk())
-                .andReturn();
+                .andExpect(jsonPath("$.message", is(customResponse)));
 
-        String expectedResponse = "{\"status\":\"Request successfully processed\", \"message\":\"File read from: /mock/test/path.txt\"}";
-        String json = result.getResponse().getContentAsString();
-
-        JSONAssert.assertEquals(expectedResponse, result.getResponse().getContentAsString(), false);
-        assertEquals("success", 200, result.getResponse().getStatus());
-        verify(stockInputFactory).inputStocks("/mock/test/path.txt");
+        verify(stockInputService).read("/mock/test/path.txt");
     }
 
     @Test
     void testReadDataWithFileNotFoundException() throws Exception {
         String requestBody = "[\"/mock/test/path.txt\"]";
 
-        doThrow(new FileNotFoundException("File not found")).when(stockInputFactory).inputStocks("/mock/test/path.txt");
+        doThrow(new FileNotFoundException("File not found")).when(stockInputService).read("/mock/test/path.txt");
 
-
-        MvcResult result = mockMvc.perform(post("/read-data")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(requestBody))
+        mockMvc.perform(post("/read-data")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestBody))
                 .andExpect(status().isOk())
-                .andReturn();
-
-        String expectedResponse = "{\"status\":\"Request successfully processed\",\"message\":\"Error on path: /mock/test/path.txt Error message: File not found\\n\"}";
+                .andExpect(jsonPath("$.status", is("Request successfully processed")))
+                .andExpect(jsonPath(
+                        "$.message",
+                        is("Error on path: /mock/test/path.txt Error message: java.io.FileNotFoundException: File not found")))
+        ;
 
     }
 

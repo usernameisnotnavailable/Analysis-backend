@@ -20,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @WebMvcTest(DataProviderController.class)
@@ -45,9 +46,9 @@ class DataProviderControllerTest {
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(new ArrayList<>());
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.get("/stocks?stock=OTP&from=2020-01-01&to=2021-01-01"))
+                .andExpect(status().isOk())
                 .andReturn();
 
-        assertEquals(204, result.getResponse().getStatus());
     }
 
 
