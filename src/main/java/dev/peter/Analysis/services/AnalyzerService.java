@@ -39,7 +39,7 @@ public class AnalyzerService {
     // TODO: implementation should consider shifting or data should reach in the past to avoid empty beginnings!!
     // TODO: exception handling needed
 
-    private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period) {
+/*    private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period) {
         List<Double> result = new ArrayList<>();
         double tempSum = 0;
 
@@ -67,9 +67,9 @@ public class AnalyzerService {
         }
 
         return result;
-    }
+    }*/
 
-    private List<Double> refactoredSimpleMovingAverage(List<Stock> listOfStock, int period){
+    private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period){
         List<Double> result = new ArrayList<>();
         double tempSum = 0;
 
@@ -77,7 +77,7 @@ public class AnalyzerService {
 
         if (isEvenPeriod){
             for (int i = 0; i < period; i++) {
-                if(i == 0 || i == period - 1){
+                if (i == 0 || i == period - 1){
                     tempSum += listOfStock.get(i).getClosePrice() / 2;
                 } else {
                     tempSum += listOfStock.get(i).getClosePrice();
