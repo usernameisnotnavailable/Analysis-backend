@@ -35,88 +35,69 @@ public class AnalyzerService {
         return exponentialMovingAverage(stockList, period);
     }
 
-
-    // TODO: implementation should consider shifting or data should reach in the past to avoid empty beginnings!!
-    // TODO: exception handling needed
-
-    private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period) {
-        List<Double> result = new ArrayList<>();
+    private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period){
+        List<Double> SMA = new ArrayList<>();
         double tempSum = 0;
-
-        if (period % 2 == 0) {
-            // even
-            for (int i = 0; i <= listOfStock.size() - period; i++) {
-                for (int j = 0; j < period; j++) {
-                    if (j == 0 || j == period - 1) {
-                        tempSum += listOfStock.get(i + j).getClosePrice() / 2;
-                    }
-                    tempSum += listOfStock.get(i + j).getClosePrice();
-                }
-                result.add(tempSum / period);
-                tempSum = 0;
-            }
-        } else {
-            // odd
-            for (int i = 0; i <= listOfStock.size() - period; i++) {
-                for (int j = 0; j < period; j++) {
-                    tempSum += listOfStock.get(i + j).getClosePrice();
-                }
-                result.add(tempSum / period);
-                tempSum = 0;
-            }
-        }
-
-        return result;
-    }
-
-    private List<Double> refactoredSimpleMovingAverage(List<Stock> listOfStock, int period){
-        List<Double> result = new ArrayList<>();
-        double tempSum = 0;
-
+        double current;
         boolean isEvenPeriod = period % 2 == 0;
 
         if (isEvenPeriod){
-            for (int i = 0; i < period; i++) {
-                if(i == 0 || i == period - 1){
+            for (int i = 0; i <= period; i++) {
+                if (i == 0 || i == period){
                     tempSum += listOfStock.get(i).getClosePrice() / 2;
                 } else {
                     tempSum += listOfStock.get(i).getClosePrice();
                 }
             }
 
-            result.add(tempSum / 2);
+            current = tempSum / period;
+            SMA.add(roundToTwoDecimals(current));
 
-            for (int i = period; i < listOfStock.size(); i++) {
+            for (int i = period; i < listOfStock.size() - 1; i++) {
+                tempSum -= listOfStock.get(i - period).getClosePrice() / 2;
+                tempSum -= listOfStock.get(i - period + 1).getClosePrice() / 2;
                 tempSum += listOfStock.get(i).getClosePrice() / 2;
-                tempSum -= listOfStock.get(i-period).getClosePrice() / 2;
-                result.add(tempSum/period);
+                tempSum += listOfStock.get(i + 1).getClosePrice() / 2;
+
+                current = tempSum / period;
+                SMA.add(roundToTwoDecimals(current));
             }
 
         } else {
             for (int i = 0; i < period; i++) {
                 tempSum += listOfStock.get(i).getClosePrice();
             }
-            result.add(tempSum/period);
+            current = tempSum/period;
+            SMA.add(roundToTwoDecimals(current));
 
             for (int i = period; i < listOfStock.size(); i++) {
                 tempSum += listOfStock.get(i).getClosePrice();
                 tempSum -= listOfStock.get(i-period).getClosePrice();
-                result.add(tempSum/period);
+
+                current = tempSum/period;
+                SMA.add(roundToTwoDecimals(current));
             }
         }
 
-        return result;
+        return SMA;
     }
 
     private List<Double> exponentialMovingAverage(List<Stock> listOfStock, int period){
-        int k = 2 / (period + 1);
+        double k = 2d / (period + 1);
 
         List<Double> EMA = new ArrayList<>();
-        EMA.add(listOfStock.get(0).getClosePrice());
+        List<Double> SMA;
+        if (period % 2 == 0){
+            SMA = simpleMovingAverage(listOfStock.subList(0, period + 1), period);
+        } else {
+            SMA = simpleMovingAverage(listOfStock.subList(0, period), period);
+        }
+        Double singleSMA = SMA.get(SMA.size() - 1);
+        EMA.add(roundToTwoDecimals(singleSMA));
 
-        for (int i = 1; i < listOfStock.size(); i++) {
-            Double EMAToday = (listOfStock.get(i).getClosePrice() * k) + (EMA.get(i - 1) * (1 - k));
-            EMA.add(EMAToday);
+        for (int i = period - 1; i < listOfStock.size(); i++) {
+            Double EMAToday = (listOfStock.get(i).getClosePrice() * k) + (EMA.get(EMA.size() - 1)) * (1 - k);
+            EMA.add(roundToTwoDecimals(EMAToday));
         }
 
         return EMA;
@@ -128,5 +109,10 @@ public class AnalyzerService {
         return rsiValues;
 
     }
+
+    protected double roundToTwoDecimals(Double amount) {
+        return Math.round(amount * 100) / 100d;
+    }
+
 
 }
