@@ -42,7 +42,10 @@ class AnalyzerServiceTest {
                 new Stock("otp", LocalDate.of(2024, 5, 9), 200.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0),
                 new Stock("otp", LocalDate.of(2024, 5, 10), 250.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0),
                 new Stock("otp", LocalDate.of(2024, 5, 11), 300.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0),
-                new Stock("otp", LocalDate.of(2024, 5, 12), 350.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0)
+                new Stock("otp", LocalDate.of(2024, 5, 12), 350.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0),
+                new Stock("otp", LocalDate.of(2024, 5, 13), 350.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0),
+                new Stock("otp", LocalDate.of(2024, 5, 14), 350.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0),
+                new Stock("otp", LocalDate.of(2024, 5, 15), 350.0, 100, 100.0, 100.0, 100, 100.0, 100.0, 100.0, "HUF", 100.0, 100.0)
         );
     }
 
@@ -51,7 +54,7 @@ class AnalyzerServiceTest {
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(mockStocks);
 
-        double expected = 225;
+        double expected = 250;
         assertEquals(expected, analyzerService.getAverage(anyString(), any(), any()));
 
     }
@@ -61,8 +64,8 @@ class AnalyzerServiceTest {
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(mockStocks);
 
-        List<Double> expectedFor3 = List.of(150d, 200d, 250d, 300d, 250d, 200d, 150d, 200d, 250d, 300d);
-        List<Double> expectedFor4 = List.of(200d, 250d, 262.5, 237.5, 212.5, 187.5, 250d);
+        List<Double> expectedFor3 = List.of(150d, 200d, 250d, 300d, 250d, 200d, 150d, 200d, 250d, 300d,333.3333333333333,350d,350d);
+        List<Double> expectedFor4 = List.of(200d, 250d, 262.5, 237.5, 212.5, 187.5, 200d, 250d,293.75,325d,343.75);
 
         assertIterableEquals(expectedFor3, analyzerService.simpleMovingAverage(anyString(), any(), any(), 3));
         assertIterableEquals(expectedFor4, analyzerService.simpleMovingAverage(anyString(), any(), any(), 4));

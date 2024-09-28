@@ -35,40 +35,6 @@ public class AnalyzerService {
         return exponentialMovingAverage(stockList, period);
     }
 
-
-    // TODO: implementation should consider shifting or data should reach in the past to avoid empty beginnings!!
-    // TODO: exception handling needed
-
-/*    private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period) {
-        List<Double> result = new ArrayList<>();
-        double tempSum = 0;
-
-        if (period % 2 == 0) {
-            // even
-            for (int i = 0; i <= listOfStock.size() - period; i++) {
-                for (int j = 0; j < period; j++) {
-                    if (j == 0 || j == period - 1) {
-                        tempSum += listOfStock.get(i + j).getClosePrice() / 2;
-                    }
-                    tempSum += listOfStock.get(i + j).getClosePrice();
-                }
-                result.add(tempSum / period);
-                tempSum = 0;
-            }
-        } else {
-            // odd
-            for (int i = 0; i <= listOfStock.size() - period; i++) {
-                for (int j = 0; j < period; j++) {
-                    tempSum += listOfStock.get(i + j).getClosePrice();
-                }
-                result.add(tempSum / period);
-                tempSum = 0;
-            }
-        }
-
-        return result;
-    }*/
-
     private List<Double> simpleMovingAverage(List<Stock> listOfStock, int period){
         List<Double> result = new ArrayList<>();
         double tempSum = 0;
@@ -76,19 +42,22 @@ public class AnalyzerService {
         boolean isEvenPeriod = period % 2 == 0;
 
         if (isEvenPeriod){
-            for (int i = 0; i < period; i++) {
-                if (i == 0 || i == period - 1){
+            for (int i = 0; i <= period; i++) {
+                if (i == 0 || i == period){
                     tempSum += listOfStock.get(i).getClosePrice() / 2;
                 } else {
                     tempSum += listOfStock.get(i).getClosePrice();
                 }
             }
 
-            result.add(tempSum / 2);
+            result.add(tempSum / period);
 
-            for (int i = period; i < listOfStock.size(); i++) {
+            for (int i = period; i < listOfStock.size() - 1; i++) {
+                tempSum -= listOfStock.get(i - period).getClosePrice() / 2;
+                tempSum -= listOfStock.get(i - period + 1).getClosePrice() / 2;
                 tempSum += listOfStock.get(i).getClosePrice() / 2;
-                tempSum -= listOfStock.get(i-period).getClosePrice() / 2;
+                tempSum += listOfStock.get(i + 1).getClosePrice() / 2;
+
                 result.add(tempSum/period);
             }
 
