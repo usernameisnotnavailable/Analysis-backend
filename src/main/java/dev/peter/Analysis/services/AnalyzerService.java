@@ -78,13 +78,17 @@ public class AnalyzerService {
     }
 
     private List<Double> exponentialMovingAverage(List<Stock> listOfStock, int period){
-        int k = 2 / (period + 1);
+        double k = 2d / (period + 1);
 
         List<Double> EMA = new ArrayList<>();
-        EMA.add(listOfStock.get(0).getClosePrice());
 
-        for (int i = 1; i < listOfStock.size(); i++) {
-            Double EMAToday = (listOfStock.get(i).getClosePrice() * k) + (EMA.get(i - 1) * (1 - k));
+        //get starting sma
+        List<Double> SMA = simpleMovingAverage(listOfStock.subList(0, period), period);
+
+        EMA.add(SMA.get(SMA.size() - 1));
+
+        for (int i = period - 1; i < listOfStock.size(); i++) {
+            Double EMAToday = (listOfStock.get(i).getClosePrice() * k) + (EMA.get(EMA.size() - 1)) * (1 - k);
             EMA.add(EMAToday);
         }
 

@@ -71,4 +71,12 @@ class AnalyzerServiceTest {
         assertIterableEquals(expectedFor4, analyzerService.simpleMovingAverage(anyString(), any(), any(), 4));
     }
 
+    @Test
+    void testExponentialMovingAverageWithDifferentPeriods(){
+        when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
+                .thenReturn(mockStocks);
+        List<Double> expected3 = List.of(150.0, 175.0, 212.5, 256.25, 303.125,201.5625,175.78125,187.890625,218.9453125, 259.47265625,304.736328125,327.3681640625,338.68408203125,344.342041015625);
+        assertIterableEquals(expected3, analyzerService.exponentialMovingAverage(anyString(), any(), any(), 3));
+    }
+
 }
