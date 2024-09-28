@@ -5,7 +5,6 @@ import dev.peter.Analysis.services.stockdataservice.DataService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,7 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -64,7 +64,7 @@ class AnalyzerServiceTest {
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(mockStocks);
 
-        List<Double> expectedFor3 = List.of(150d, 200d, 250d, 300d, 250d, 200d, 150d, 200d, 250d, 300d,333.3333333333333,350d,350d);
+        List<Double> expectedFor3 = List.of(150d, 200d, 250d, 300d, 250d, 200d, 150d, 200d, 250d, 300d,333.33,350d,350d);
         List<Double> expectedFor4 = List.of(200d, 250d, 262.5, 237.5, 212.5, 187.5, 200d, 250d,293.75,325d,343.75);
 
         assertIterableEquals(expectedFor3, analyzerService.simpleMovingAverage(anyString(), any(), any(), 3));
@@ -75,8 +75,24 @@ class AnalyzerServiceTest {
     void testExponentialMovingAverageWithDifferentPeriods(){
         when(dataService.getStocksByNameForTimePeriod(anyString(), any(), any()))
                 .thenReturn(mockStocks);
-        List<Double> expected3 = List.of(150.0, 175.0, 212.5, 256.25, 303.125,201.5625,175.78125,187.890625,218.9453125, 259.47265625,304.736328125,327.3681640625,338.68408203125,344.342041015625);
+        List<Double> expected3 = List.of(150.0, 175.0, 212.5, 256.25, 303.13, 201.57, 175.79, 187.9, 218.95, 259.48,304.74,327.37,338.69,344.35);
+        List<Double> expected4 = List.of(200.0, 220.0,252.0,291.2,214.72, 188.83,193.3, 215.98, 249.59, 289.75, 313.85, 328.31, 336.99);
+
         assertIterableEquals(expected3, analyzerService.exponentialMovingAverage(anyString(), any(), any(), 3));
+        assertIterableEquals(expected4, analyzerService.exponentialMovingAverage(anyString(), any(), any(), 4));
     }
+
+    @Test
+    void testRounding(){
+        double expected = 10.55;
+        double result = analyzerService.roundToTwoDecimals(10.554);
+        double expected2 = 187.89;
+        double result2 = analyzerService.roundToTwoDecimals(187.894999999999999999999);
+
+        assertEquals(expected, result);
+        assertEquals(expected2, result2, 0.1);
+    }
+
+
 
 }
