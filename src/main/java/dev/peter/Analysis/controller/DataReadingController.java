@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 @Controller
 public class DataReadingController {
     private final StockInputService stockInputService;
-
     private final Logger logger = Logger.getLogger(DataReadingController.class.getName());
 
     public DataReadingController(StockInputService stockInputService) {

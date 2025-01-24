@@ -2,7 +2,6 @@ FROM openjdk:17
 
 WORKDIR /app
 
-COPY /src/main/java .
 COPY /plaindata .
 
 EXPOSE 8080

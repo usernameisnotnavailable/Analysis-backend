@@ -2,22 +2,18 @@ package dev.peter.Analysis.controller;
 
 import dev.peter.Analysis.controller.DTO.DataRequest;
 import dev.peter.Analysis.services.AnalyzerService;
-import dev.peter.Analysis.services.stockdataservice.DataService;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
+@Controller
 public class AnalyzedDataController {
-    private final DataService dataService;
     private final AnalyzerService analyzerService;
 
-    public AnalyzedDataController(
-            DataService dataService,
-            AnalyzerService analyzerService) {
-        this.dataService = dataService;
+    public AnalyzedDataController(AnalyzerService analyzerService) {
         this.analyzerService = analyzerService;
     }
 

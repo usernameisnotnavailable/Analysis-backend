@@ -6,6 +6,7 @@ import dev.peter.Analysis.repository.StockRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -37,5 +38,9 @@ public class StockDatabaseService {
             logger.warning("Could not connect to database to save stock input");
             throw new UnableToConnectException("Could not connect to database to save stock input");
         }
+    }
+
+    public List<String> getCompanyList() {
+        return stockRepository.getCompanyList();
     }
 }

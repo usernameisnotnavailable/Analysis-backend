@@ -14,10 +14,13 @@ public class DataService {
     private final Logger logger = Logger.getLogger(DataService.class.getName());
     private final StockCacheService databaseCache;
     private final StockSave stockSave;
-
-    public DataService(StockCacheService databaseCache, StockSave stockSave) {
+    private final StockDatabaseService stockDatabaseService;
+    private List<String> companyList;
+    public DataService(StockCacheService databaseCache, StockSave stockSave, StockDatabaseService stockDatabaseService) {
         this.databaseCache = databaseCache;
         this.stockSave = stockSave;
+        this.stockDatabaseService = stockDatabaseService;
+
     }
 
     public List<Stock> getStocksByNameForTimePeriod(String companyName, LocalDate startDate, LocalDate endDate) {
@@ -31,6 +34,15 @@ public class DataService {
             logger.warning("Unsuccessful saving request");
             throw new NoContentFoundException("Couldn't read stock details.");
         }
+    }
+
+    public List<String> getcompanyList() {
+        refreshStockListFromDatabase();
+        return companyList;
+    }
+
+    private void refreshStockListFromDatabase(){
+        this.companyList = stockDatabaseService.getCompanyList();
     }
 
 }
