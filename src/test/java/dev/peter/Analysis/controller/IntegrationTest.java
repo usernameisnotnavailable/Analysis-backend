@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.event.annotation.AfterTestExecution;
+import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
@@ -17,12 +19,24 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(locations = "classpath:/application-test.properties")
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class IntegrationTest {
 
     @Autowired
     JdbcTemplate jdbc;
     @Autowired
     MockMvc mockMvc;
+    @BeforeAll
+    void init() {
+        jdbc.execute(createTable);
+        jdbc.execute(createScript);
+    }
+
+    @AfterAll
+    void clear() {
+        jdbc.execute(deleteScript);
+        jdbc.execute("drop table stock");
+    }
 
     @Value("${sql.create.table.script}")
     private String createTable;
@@ -32,17 +46,17 @@ public class IntegrationTest {
     @Value("${sql.delete.script}")
     private String deleteScript;
 
-    @BeforeEach
+/*    @BeforeEach
     public void setup(){
         jdbc.execute(createTable);
         jdbc.execute(createScript);
-    }
+    }*/
 
-    @AfterEach
+/*    @AfterEach
     public void clear(){
         jdbc.execute(deleteScript);
         jdbc.execute("drop table stock");
-    }
+    }*/
     @Test
     public void companyList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/getStockList"))

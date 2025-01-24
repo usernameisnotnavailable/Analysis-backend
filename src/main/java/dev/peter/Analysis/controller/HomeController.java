@@ -5,9 +5,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.logging.Logger;
+
 @Controller
 public class HomeController {
-
+    Logger logger = Logger.getLogger(HomeController.class.getName());
     private final DataService dataService;
 
     public HomeController(DataService dataService) {
@@ -22,6 +24,7 @@ public class HomeController {
 
     @GetMapping("/getStockList")
     public ResponseEntity<?> getStockList(){
+        logger.info("hit endpoint: /getStockList");
         return ResponseEntity.ok(dataService.getcompanyList());
     }
 
