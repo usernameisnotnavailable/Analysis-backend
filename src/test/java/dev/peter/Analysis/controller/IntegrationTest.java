@@ -46,17 +46,7 @@ public class IntegrationTest {
     @Value("${sql.delete.script}")
     private String deleteScript;
 
-/*    @BeforeEach
-    public void setup(){
-        jdbc.execute(createTable);
-        jdbc.execute(createScript);
-    }*/
 
-/*    @AfterEach
-    public void clear(){
-        jdbc.execute(deleteScript);
-        jdbc.execute("drop table stock");
-    }*/
     @Test
     public void companyList() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders.get("/getStockList"))
