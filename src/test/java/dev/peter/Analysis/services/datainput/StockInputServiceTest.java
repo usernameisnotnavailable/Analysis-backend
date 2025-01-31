@@ -21,7 +21,6 @@ class StockInputServiceTest {
 
     @Mock
     DataReader dataReader;
-
     @Mock
     StockInputFactory stockInputFactory;
     @Mock

@@ -1,19 +1,19 @@
 package dev.peter.Analysis.controller;
 
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.event.annotation.AfterTestExecution;
-import org.springframework.test.context.event.annotation.BeforeTestExecution;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.hasSize;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource(locations = "classpath:/application-test.properties")
@@ -52,8 +52,6 @@ public class IntegrationTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/getStockList"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value("otp"));
-
-
     }
 
     @Test
@@ -74,7 +72,6 @@ public class IntegrationTest {
                 .param("to", "2024-05-08"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""));
-
     }
 
     @Test
@@ -85,10 +82,6 @@ public class IntegrationTest {
                         .param("to", "2024-05-07"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
-
     }
-
-
-
 
 }
